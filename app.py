@@ -4,7 +4,7 @@
     pip install -r requirements.txt
     streamlit run streamlit_supabase_crud_dashboard.py
 
-권장 Streamlit secrets (.streamlit/secrets.toml):
+필수 Streamlit secrets (.streamlit/secrets.toml 또는 Streamlit Cloud Secrets):
     SUPABASE_URL = "https://<project-ref>.supabase.co"
     SUPABASE_KEY = "sb_publishable_..."
 """
@@ -300,20 +300,23 @@ st.title("🏦 MG 통합 DB 관리 대시보드")
 st.caption("Supabase public 스키마의 지점·조합원·예적금·대출·거래·시장금리 데이터 CRUD")
 
 with st.sidebar:
-    st.header("Supabase 연결")
-    url = st.text_input("SUPABASE_URL", value=secret("SUPABASE_URL"), placeholder="https://...supabase.co")
-    key = st.text_input("SUPABASE_KEY", value=secret("SUPABASE_KEY"), type="password", placeholder="sb_publishable_...")
-    st.caption("배포 시 `.streamlit/secrets.toml` 또는 Streamlit Cloud Secrets 사용을 권장합니다.")
+    st.header("업무 메뉴")
     selected_table = st.selectbox("관리 메뉴", list(TABLES), format_func=lambda x: TABLES[x]["label"])
 
+url = secret("SUPABASE_URL").strip()
+key = secret("SUPABASE_KEY").strip()
+
 if not url or not key:
-    st.info("왼쪽 사이드바에 Supabase URL과 publishable/anon 키를 입력하세요.")
+    st.error(
+        "Supabase 연결 정보가 설정되지 않았습니다. Streamlit Cloud의 "
+        "App settings → Secrets에 SUPABASE_URL과 SUPABASE_KEY를 등록하세요."
+    )
     st.stop()
 if reject_privileged_key(key):
     st.error("보안을 위해 secret/service_role 키는 이 대시보드에서 사용할 수 없습니다.")
     st.stop()
 
-client = get_client(url.rstrip("/"), key.strip())
+client = get_client(url.rstrip("/"), key)
 config = TABLES[selected_table]
 
 st.markdown(
