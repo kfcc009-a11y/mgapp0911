@@ -1,7 +1,7 @@
 """MG Supabase 통합 CRUD 대시보드.
 
 실행:
-    pip install streamlit supabase pandas
+    pip install -r requirements.txt
     streamlit run streamlit_supabase_crud_dashboard.py
 
 권장 Streamlit secrets (.streamlit/secrets.toml):
@@ -368,7 +368,7 @@ with tab_delete:
     delete_panel(client, selected_table, config, selected_row)
 
 with st.expander("실행 및 배포 안내"):
-    st.code("pip install streamlit supabase pandas\nstreamlit run streamlit_supabase_crud_dashboard.py", language="bash")
+    st.code("pip install -r requirements.txt\nstreamlit run streamlit_supabase_crud_dashboard.py", language="bash")
     st.markdown(
         "Streamlit Cloud에서는 앱 설정의 **Secrets**에 `SUPABASE_URL`과 "
         "`SUPABASE_KEY`를 등록하세요. secret/service_role 키를 공개 저장소에 커밋하면 안 됩니다."
